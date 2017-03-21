@@ -139,6 +139,7 @@ export default class Cubify extends Component
 				"width":"100%",
 				"height":"100%"
 			}
+		//
 		let cubifyportalStyle =
 			{
 				"display":"inline-block",
@@ -603,10 +604,6 @@ export default class Cubify extends Component
 				= backmaskClippathStyle;
 			}
 		}
-		/*window.requestAnimationFrame(()=>
-		{
-			scopeProxy.activatePortalCubes();
-		});*/
 	}
 	cubifyApply()
 	{
@@ -617,12 +614,6 @@ export default class Cubify extends Component
 		{
 			"Active":true
 		});
-		/*
-		window.requestAnimationFrame(()=>
-		{
-			scopeProxy.generatePortalCubes();
-		});
-		*/
 		window.requestAnimationFrame(()=>
 		{
 			scopeProxy.activatePortalCubes();

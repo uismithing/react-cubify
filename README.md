@@ -9,7 +9,7 @@ Cubify is a React component designed to represent a designated area as a matrix 
   * Ability to assign a unique child to each cube face (4 faces)
 
 ### Learn more
-See the demo at [http://www.uismithing.com/main/cubify](http://www.uismithing.com/main/cubify).
+See the demo at [http://www.uismithing.com/main/wares/cubify](http://www.uismithing.com/main/wares/cubify).
 
 ### Repository
 [https://github.com/uismithing/react-cubify](https://github.com/uismithing/react-cubify)

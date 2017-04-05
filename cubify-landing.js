@@ -6,12 +6,13 @@ import Highlight from "react-syntax-highlight";
 import Formfields from "react-form-fields";
 import Cubify from "react-cubify";
 //
-import {fetchCubifyHtml} from "../actions/actions";
-import {fetchCubifyPropsexampleJs} from "../actions/actions";
-import {fetchCubifyMethodsexampleJs} from "../actions/actions";
-import {fetchCubifyPropsDemoexampleJson} from "../actions/actions";
-import {fetchCubifyCssDemoexampleCss} from "../actions/actions";
-import {fetchCubifyDeployexampleHtml} from "../actions/actions";
+import {fetchCubifyHtml} from "../actions/actions_cubify-landing";
+import {fetchCubifyPropsexampleJs} from "../actions/actions_cubify-landing";
+import {fetchCubifyMethodsexampleJs} from "../actions/actions_cubify-landing";
+import {fetchCubifyPropsDemoexampleJson} from "../actions/actions_cubify-landing";
+import {fetchCubifyCssDemoexampleCss} from "../actions/actions_cubify-landing";
+import {fetchCubifyDeployexampleHtml} from "../actions/actions_cubify-landing";
+//
 import BackgroundCanvas from "../components/background-canvas";
 import {updateState} from "../toolbox/toolbox";
 import ReactGA from "react-ga";
@@ -25,10 +26,6 @@ class CubifyLanding extends Component
 	constructor(props)
 	{
 	    super(props);
-	}
-	getChildContext()
-	{
-		// empty
 	}
 	getInitialState()
 	{
@@ -51,34 +48,28 @@ class CubifyLanding extends Component
 	{
 		let scopeProxy
 			= this;
-		let setViewLoaded
-			= scopeProxy.context.setViewLoaded;
-		let setLayoutMode
-			= scopeProxy.context.setLayoutMode;
-		let updateNavigationState
-			= scopeProxy.context.updateNavigationState;
 		let navigationSection
 			= 0;
 		//
 		window.requestAnimationFrame(()=>
 		{
-			// Updating the section index this way lets the
-			// state of the nagigation cluster fully initialize
-			// before the activeKey value is updated. This is
-			// necessary for it to be possible to navigate
-			// back to the wares section from within a component
-			// landing page when the component landing page is
-			// directly accessed via the url bar in the browser.
-			updateNavigationState(navigationSection);
+			let updateNavigationState
+				= scopeProxy.props.updateNavigationstateAction;
+			let setViewLoaded
+				= scopeProxy.props.setViewLoadedAction;
+			let setLayoutMode
+				= scopeProxy.props.setLayoutModeAction;
+			//
+			let setviewTimeout =
+				setTimeout(function()
+				{
+					setViewLoaded(true);
+					setLayoutMode("full");
+					updateNavigationState(navigationSection);
+				},
+				500);
+			//
 		});
-		let setviewTimeout =
-			setTimeout(function()
-			{
-				setViewLoaded(true);
-				setLayoutMode("full");
-			},
-			500);
-		//
 		updateState(scopeProxy,
 		{
 			"Ready":false
@@ -733,40 +724,35 @@ class CubifyLanding extends Component
 			cubifywallpaperRef.generatePortalCubes();
 		});
 	}
-	//*************************
-	//*************************
-	// Assignments
-	//
-	static contextTypes =
-		{
-			"transitionBody":PropTypes.func,
-			"updateNavigationState":PropTypes.func,
-			"setViewLoaded":PropTypes.func,
-			"setLayoutMode":PropTypes.func
-		}
-	//
 }
-function mapAxiosstateToReactprops(axiosState)
+// Map Redux state items to this.props properties
+// each time the Redux state changes. When that
+// happens, the render() function is called
+// and the DOM is updated according to any
+// changes that happened in this.props. Use this
+// to retrieve values from the Redux state and
+// place them in this.props.
+function mapReduxstateToProps(reduxState)
 {
-	// This function is only called when the axios
-	// response updates the application state. Once
-	// this function is called, the component state
-	// is updated which causes the render() function
-	// to execute.
 	return(
 	{
-		// When the application state (state.posts.all) is
-		// updated by the axios promise, the promise response
-		// is assigned the component state this.content.posts.
-		"html":axiosState.content.html,
-		"cubifyPropsexampleJs":axiosState.content.cubifyPropsexampleJs,
-		"cubifyMethodsexampleJs":axiosState.content.cubifyMethodsexampleJs,
-		"cubifyPropsDemoexampleJson":axiosState.content.cubifyPropsDemoexampleJson,
-		"cubifyCssDemoexampleCss":axiosState.content.cubifyCssDemoexampleCss,
-		"cubifyDeployexampleHtml":axiosState.content.cubifyDeployexampleHtml
+		"html":reduxState.cubifyReducer.html,
+		"cubifyPropsexampleJs":reduxState.cubifyReducer.cubifyPropsexampleJs,
+		"cubifyMethodsexampleJs":reduxState.cubifyReducer.cubifyMethodsexampleJs,
+		"cubifyPropsDemoexampleJson":reduxState.cubifyReducer.cubifyPropsDemoexampleJson,
+		"cubifyCssDemoexampleCss":reduxState.cubifyReducer.cubifyCssDemoexampleCss,
+		"cubifyDeployexampleHtml":reduxState.cubifyReducer.cubifyDeployexampleHtml,
+		"setViewLoadedAction":reduxState.mainReducer.setViewloadedAction,
+		"setLayoutModeAction":reduxState.mainReducer.setLayoutmodeAction,
+		"updateNavigationstateAction":reduxState.navigationReducer.updateNavigationstateAction
 	});
 }
-export default connect(mapAxiosstateToReactprops,
+// Map Redux action-creators to this.props properties
+// when the component is initialized. This gives access
+// to each action-creator to the component from within
+// this.props so that actions can be dispatched. Use
+// this to initially establish values in the Redux state.
+export default connect(mapReduxstateToProps,
 {
 	"fetchCubifyHtml":fetchCubifyHtml,
 	"fetchCubifyPropsexampleJs":fetchCubifyPropsexampleJs,
